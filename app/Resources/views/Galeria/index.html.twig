@@ -1,0 +1,21 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Galería{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="text-center">Ver Galerías</h1>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                {% for galeria in galerias %}
+                    <br/>
+                    <a style="width: 190px" href="{{ path('galeria', { 'id': galeria.id}) }}" role="button" class="btn btn-primary center-block">{{  galeria.nombreGaleria }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br/>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

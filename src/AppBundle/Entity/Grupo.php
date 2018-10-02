@@ -1,0 +1,619 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Grupo
+ *
+ * @ORM\Table(name="grupo")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GrupoRepository")
+ */
+class Grupo
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codigo_grupo", type="string", length=255, unique=true)
+     */
+    private $codigoGrupo;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="anio", type="integer")
+     */
+    private $anio;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isActive", type="boolean")
+     */
+    private $isActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isVotosProfe", type="boolean")
+     */
+    private $isVotosProfe;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isVotosMuestra", type="boolean")
+     */
+    private $isVotosMuestra;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isCitasActive", type="boolean")
+     */
+    private $isCitasActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isComprasActive", type="boolean")
+     */
+    private $isComprasActive;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Universidad", inversedBy="grupo")
+     */
+    private $universidad;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Especialidad", inversedBy="grupo")
+     */
+    private $especialidad;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GruposUsuarios", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $grupos_usuarios;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GrupoMuestra", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $gruposMuestras;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GrupoMuestraVotar", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $gruposMuestrasVotar;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CuadranteGrupo", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $cuadranteGrupo;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GrupoProfesor", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $grupos_profesores;
+
+    /**
+     * One Grupo has Many UsuarioMuestra.
+     * @ORM\OneToMany(targetEntity="UsuariosMuestras", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    private $usuario_muestra;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ImageOrla", mappedBy="grupo", cascade={"persist", "remove"})
+     */
+    protected $imagenes;
+
+
+    public function __construct()
+    {
+        $this->gruposMuestras = new ArrayCollection();
+        $this->grupos_usuarios = new ArrayCollection();
+        $this->cuadranteGrupo = new ArrayCollection();
+        $this->grupos_profesores = new ArrayCollection();
+        $this->imagenes = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+        return (string) $this->getUniversidad(). " - ".$this->getEspecialidad(). " (" . $this->getAnio().")";
+    }
+
+    public function getNombreGrupo()
+    {
+        return (string) $this->getUniversidad(). " - ".$this->getEspecialidad(). " (" . $this->getAnio().")";
+    }
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+
+    /**
+     * Set codigoGrupo
+     *
+     * @param string $codigoGrupo
+     *
+     * @return Grupo
+     */
+    public function setCodigoGrupo($codigoGrupo)
+    {
+        $this->codigoGrupo = $codigoGrupo;
+
+        return $this;
+    }
+
+    /**
+     * Get codigoGrupo
+     *
+     * @return string
+     */
+    public function getCodigoGrupo()
+    {
+        return $this->codigoGrupo;
+    }
+
+    /**
+     * Set especialidad
+     *
+     * @param \AppBundle\Entity\Especialidad $especialidad
+     *
+     * @return Grupo
+     */
+    public function setEspecialidad(\AppBundle\Entity\Especialidad $especialidad = null)
+    {
+        $this->especialidad = $especialidad;
+
+        return $this;
+    }
+
+    /**
+     * Get especialidad
+     *
+     * @return \AppBundle\Entity\Especialidad
+     */
+    public function getEspecialidad()
+    {
+        return $this->especialidad;
+    }
+
+    /**
+     * Set universidad
+     *
+     * @param \AppBundle\Entity\Universidad $universidad
+     *
+     * @return Grupo
+     */
+    public function setUniversidad(\AppBundle\Entity\Universidad $universidad = null)
+    {
+        $this->universidad = $universidad;
+
+        return $this;
+    }
+
+    /**
+     * Get universidad
+     *
+     * @return \AppBundle\Entity\Universidad
+     */
+    public function getUniversidad()
+    {
+        return $this->universidad;
+    }
+
+    /**
+     * Add gruposUsuario
+     *
+     * @param \AppBundle\Entity\GruposUsuarios $gruposUsuario
+     *
+     * @return Grupo
+     */
+    public function addGruposUsuario(\AppBundle\Entity\GruposUsuarios $gruposUsuario)
+    {
+        $this->grupos_usuarios[] = $gruposUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Remove gruposUsuario
+     *
+     * @param \AppBundle\Entity\GruposUsuarios $gruposUsuario
+     */
+    public function removeGruposUsuario(\AppBundle\Entity\GruposUsuarios $gruposUsuario)
+    {
+        $this->grupos_usuarios->removeElement($gruposUsuario);
+    }
+
+    /**
+     * Get gruposUsuarios
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGruposUsuarios()
+    {
+        return $this->grupos_usuarios;
+    }
+
+    /**
+     * Set anio
+     *
+     * @param integer $anio
+     *
+     * @return Grupo
+     */
+    public function setAnio($anio)
+    {
+        $this->anio = $anio;
+
+        return $this;
+    }
+
+    /**
+     * Get anio
+     *
+     * @return integer
+     */
+    public function getAnio()
+    {
+        return $this->anio;
+    }
+
+    /**
+     * Add gruposMuestra
+     *
+     * @param \AppBundle\Entity\GrupoMuestra $gruposMuestra
+     *
+     * @return Grupo
+     */
+    public function addGruposMuestra(\AppBundle\Entity\GrupoMuestra $gruposMuestra)
+    {
+        $this->gruposMuestras[] = $gruposMuestra;
+
+        return $this;
+    }
+
+    /**
+     * Remove gruposMuestra
+     *
+     * @param \AppBundle\Entity\GrupoMuestra $gruposMuestra
+     */
+    public function removeGruposMuestra(\AppBundle\Entity\GrupoMuestra $gruposMuestra)
+    {
+        $this->gruposMuestras->removeElement($gruposMuestra);
+    }
+
+    /**
+     * Get gruposMuestras
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGruposMuestras()
+    {
+        return $this->gruposMuestras;
+    }
+
+    /**
+     * Add cuadranteGrupo
+     *
+     * @param \AppBundle\Entity\CuadranteGrupo $cuadranteGrupo
+     *
+     * @return Grupo
+     */
+    public function addCuadranteGrupo(\AppBundle\Entity\CuadranteGrupo $cuadranteGrupo)
+    {
+        $this->cuadranteGrupo[] = $cuadranteGrupo;
+
+        return $this;
+    }
+
+    /**
+     * Remove cuadranteGrupo
+     *
+     * @param \AppBundle\Entity\CuadranteGrupo $cuadranteGrupo
+     */
+    public function removeCuadranteGrupo(\AppBundle\Entity\CuadranteGrupo $cuadranteGrupo)
+    {
+        $this->cuadranteGrupo->removeElement($cuadranteGrupo);
+    }
+
+    /**
+     * Get cuadranteGrupo
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCuadranteGrupo()
+    {
+        return $this->cuadranteGrupo;
+    }
+
+    /**
+     * Add gruposProfesore
+     *
+     * @param \AppBundle\Entity\GrupoProfesor $gruposProfesore
+     *
+     * @return Grupo
+     */
+    public function addGruposProfesore(\AppBundle\Entity\GrupoProfesor $gruposProfesore)
+    {
+        $this->grupos_profesores[] = $gruposProfesore;
+
+        return $this;
+    }
+
+    /**
+     * Remove gruposProfesore
+     *
+     * @param \AppBundle\Entity\GrupoProfesor $gruposProfesore
+     */
+    public function removeGruposProfesore(\AppBundle\Entity\GrupoProfesor $gruposProfesore)
+    {
+        $this->grupos_profesores->removeElement($gruposProfesore);
+    }
+
+    /**
+     * Get gruposProfesores
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGruposProfesores()
+    {
+        return $this->grupos_profesores;
+    }
+
+    /**
+     * Set usuarioMuestra
+     *
+     * @param \AppBundle\Entity\UsuariosMuestras $usuarioMuestra
+     *
+     * @return Grupo
+     */
+    public function setUsuarioMuestra(\AppBundle\Entity\UsuariosMuestras $usuarioMuestra = null)
+    {
+        $this->usuario_muestra = $usuarioMuestra;
+
+        return $this;
+    }
+
+    /**
+     * Get usuarioMuestra
+     *
+     * @return \AppBundle\Entity\UsuariosMuestras
+     */
+    public function getUsuarioMuestra()
+    {
+        return $this->usuario_muestra;
+    }
+
+    /**
+     * Add usuarioMuestra
+     *
+     * @param \AppBundle\Entity\UsuariosMuestras $usuarioMuestra
+     *
+     * @return Grupo
+     */
+    public function addUsuarioMuestra(\AppBundle\Entity\UsuariosMuestras $usuarioMuestra)
+    {
+        $this->usuario_muestra[] = $usuarioMuestra;
+
+        return $this;
+    }
+
+    /**
+     * Remove usuarioMuestra
+     *
+     * @param \AppBundle\Entity\UsuariosMuestras $usuarioMuestra
+     */
+    public function removeUsuarioMuestra(\AppBundle\Entity\UsuariosMuestras $usuarioMuestra)
+    {
+        $this->usuario_muestra->removeElement($usuarioMuestra);
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return Grupo
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set isCitasActive
+     *
+     * @param boolean $isCitasActive
+     *
+     * @return Grupo
+     */
+    public function setIsCitasActive($isCitasActive)
+    {
+        $this->isCitasActive = $isCitasActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isCitasActive
+     *
+     * @return boolean
+     */
+    public function getIsCitasActive()
+    {
+        return $this->isCitasActive;
+    }
+
+    /**
+     * Set isComprasActive
+     *
+     * @param boolean $isComprasActive
+     *
+     * @return Grupo
+     */
+    public function setIsComprasActive($isComprasActive)
+    {
+        $this->isComprasActive = $isComprasActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isComprasActive
+     *
+     * @return boolean
+     */
+    public function getIsComprasActive()
+    {
+        return $this->isComprasActive;
+    }
+
+    /**
+     * Set isVotosProfe
+     *
+     * @param boolean $isVotosProfe
+     *
+     * @return Grupo
+     */
+    public function setIsVotosProfe($isVotosProfe)
+    {
+        $this->isVotosProfe = $isVotosProfe;
+
+        return $this;
+    }
+
+    /**
+     * Get isVotosProfe
+     *
+     * @return boolean
+     */
+    public function getIsVotosProfe()
+    {
+        return $this->isVotosProfe;
+    }
+
+    /**
+     * Set isVotosMuestra
+     *
+     * @param boolean $isVotosMuestra
+     *
+     * @return Grupo
+     */
+    public function setIsVotosMuestra($isVotosMuestra)
+    {
+        $this->isVotosMuestra = $isVotosMuestra;
+
+        return $this;
+    }
+
+    /**
+     * Get isVotosMuestra
+     *
+     * @return boolean
+     */
+    public function getIsVotosMuestra()
+    {
+        return $this->isVotosMuestra;
+    }
+
+    /**
+     * Add gruposMuestrasVotar
+     *
+     * @param \AppBundle\Entity\GrupoMuestra $gruposMuestrasVotar
+     *
+     * @return Grupo
+     */
+    public function addGruposMuestrasVotar(\AppBundle\Entity\GrupoMuestra $gruposMuestrasVotar)
+    {
+        $this->gruposMuestrasVotar[] = $gruposMuestrasVotar;
+
+        return $this;
+    }
+
+    /**
+     * Remove gruposMuestrasVotar
+     *
+     * @param \AppBundle\Entity\GrupoMuestra $gruposMuestrasVotar
+     */
+    public function removeGruposMuestrasVotar(\AppBundle\Entity\GrupoMuestra $gruposMuestrasVotar)
+    {
+        $this->gruposMuestrasVotar->removeElement($gruposMuestrasVotar);
+    }
+
+    /**
+     * Get gruposMuestrasVotar
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGruposMuestrasVotar()
+    {
+        return $this->gruposMuestrasVotar;
+    }
+
+    /**
+     * Add imagene
+     *
+     * @param \AppBundle\Entity\ImageOrla $imagene
+     *
+     * @return Grupo
+     */
+    public function addImagene(\AppBundle\Entity\ImageOrla $imagene)
+    {
+        $this->imagenes[] = $imagene;
+
+        return $this;
+    }
+
+    /**
+     * Remove imagene
+     *
+     * @param \AppBundle\Entity\ImageOrla $imagene
+     */
+    public function removeImagene(\AppBundle\Entity\ImageOrla $imagene)
+    {
+        $this->imagenes->removeElement($imagene);
+    }
+
+    /**
+     * Get imagenes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImagenes()
+    {
+        return $this->imagenes;
+    }
+}
